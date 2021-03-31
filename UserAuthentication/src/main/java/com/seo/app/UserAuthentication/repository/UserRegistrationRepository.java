@@ -6,4 +6,6 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface UserRegistrationRepository extends JpaRepository<UserRegistrationDomain, Integer> {
+    UserRegistrationDomain findByUsername(String username);
+    UserRegistrationDomain findByEmail(String email);
 }

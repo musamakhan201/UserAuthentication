@@ -1,9 +1,6 @@
 package com.seo.app.UserAuthentication.domains;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 
 import javax.persistence.*;
 
@@ -12,16 +9,14 @@ import javax.persistence.*;
 @Setter
 @Entity
 @AllArgsConstructor
+@NoArgsConstructor
 @Table(name = "email_templates")
 public class EmailTemplateDomain {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int email_template_id;
-    private String template_name;
     private String subject;
     private String body;
-    private String footer;
-    private Boolean is_html;
 
 }

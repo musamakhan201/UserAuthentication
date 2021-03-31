@@ -1,22 +1,11 @@
 package com.seo.app.UserAuthentication.controller;
 
-import com.seo.app.UserAuthentication.domain.transfer.object.AuthenticationDto;
-import com.seo.app.UserAuthentication.domain.transfer.object.UserLogInDto;
-import com.seo.app.UserAuthentication.domain.transfer.object.UserRegistrationDto;
-import com.seo.app.UserAuthentication.services.ConnectionService;
-import com.seo.app.UserAuthentication.services.EmailService;
-import com.seo.app.UserAuthentication.services.UserLogInService;
-import com.seo.app.UserAuthentication.services.UserRegistrationService;
+import com.seo.app.UserAuthentication.domain.transfer.object.*;
+import com.seo.app.UserAuthentication.services.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.util.ArrayList;
-import java.util.List;
 
 @RestController
 @RequestMapping("seo")
@@ -27,13 +16,35 @@ public class UserController {
     private UserRegistrationService userRegistrationService;
 
     @Autowired
-    ConnectionService connectionService;
-
-    @Autowired
     private UserLogInService userLogInService;
 
     @Autowired
-    EmailService sendEmail;
+    private UserAuthenticationService userAuthenticationService;
+
+    @Autowired
+    private UserLogoutService userLogoutService;
+
+    @Autowired
+    private PasswordChangeService passwordChangeService;
+
+    @Autowired
+    private UserUpdateService userUpdateService;
+
+    @Autowired
+    private ConfirmRegisterationService confirmRegisterationService;
+
+
+    @RequestMapping(value = "/password/change", method = RequestMethod.PUT)
+    public String changePassword(@RequestBody PasswordUpdateDto passwordUpdateDto){
+        log.info("POST Call received at User/change Password with DTO" + passwordUpdateDto);
+        return passwordChangeService.changePassword(passwordUpdateDto);
+    }
+
+    @RequestMapping(value = "/user/update", method = RequestMethod.PUT)
+    public String updateUser(@RequestBody UserUpdateDto userUpdateDto) {
+        log.info("POST Call received at User/update with DTO" + userUpdateDto);
+        return userUpdateService.updateUser(userUpdateDto);
+    }
 
     @RequestMapping(value = "/register", method = RequestMethod.POST)
     public String registerUser(@RequestBody UserRegistrationDto userRegistrationDto) {
@@ -47,45 +58,22 @@ public class UserController {
         return userLogInService.loginUser(userLogInDto);
     }
 
-    @PostMapping(path = "/send")
-    public void sendMail(@RequestParam(name = "email_template_id") int email_template_id) {
-        sendEmail.sendPreConfiguredMail(email_template_id);
-    }
-
     @PostMapping(path = "/auth")
     public String getStatus(@RequestBody final AuthenticationDto authenticationDto) {
-        List<String> users_list = new ArrayList<>();
-        List<String> password_list = new ArrayList<>();
-        int position = -1;
-        String status = null;
-        try {
-            Connection connection = connectionService.createConnection();
-            PreparedStatement statement = connection.prepareStatement("select username,password from users");
-            ResultSet rs = statement.executeQuery();
-            while (rs.next()) {
-                users_list.add(rs.getString("username"));
-                password_list.add(rs.getString("password"));
-            }
-        } catch (Exception e) {
-            log.error(e.toString());
+        log.info("POST Call received at user/login with DTO" + authenticationDto);
+        return userAuthenticationService.authenticateUser(authenticationDto);
+    }
 
-        }
-        String e = authenticationDto.getUsername();
-        String p = authenticationDto.getPassword();
-        for (int i = 0; i < users_list.size(); i++) {
+    @PostMapping(path = "/logout")
+    public String logOut(int user_id) {
+        log.info("POST Call received at user/logout with ID" + user_id);
+        return userLogoutService.logoutUser(user_id);
+    }
 
-
-            if (e.equals(users_list.get(i)))
-                position = i;
-        }
-        if (position == -1) {
-            status = "username doesn't exist";
-        } else if (position >= 0) {
-            if (p.equals(password_list.get(position)))
-                status = "user exist and password is true";
-            else status = "user exist and password is false";
-
-        }
-        return status;
+    @RequestMapping(value="/confirm-account", method= {RequestMethod.GET, RequestMethod.POST})
+    public String confirmUserAccount(@RequestParam("token")String confirmationToken)
+    {
+        log.info("POST Call received for confirm registration");
+        return confirmRegisterationService.confirmRegistration(confirmationToken);
     }
 }

@@ -17,13 +17,13 @@ import java.time.format.DateTimeFormatter;
 @Setter
 @Entity
 @AllArgsConstructor
-@Table(name = "Users")
+@Table(name = "users")
 public class UserRegistrationDomain implements Serializable {
 
     private static final String DATETIME_FORMAT = "yyyy-MM-dd HH:mm:ss";
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     public int user_id;
     private String first_name;
     private String last_name;
@@ -31,8 +31,10 @@ public class UserRegistrationDomain implements Serializable {
     private String email;
     private String username;
     private String password;
+    private boolean loggedIn;
     @Column(columnDefinition = "DATETIME")
     private String created_date;
+    private boolean isEnabled;
     public UserRegistrationDomain() {
         ZonedDateTime utc = ZonedDateTime.now(ZoneOffset.UTC);
         created_date = utc.format(DateTimeFormatter.ofPattern(DATETIME_FORMAT));
