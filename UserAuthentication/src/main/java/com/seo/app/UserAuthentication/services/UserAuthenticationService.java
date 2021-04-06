@@ -17,7 +17,7 @@ public class UserAuthenticationService {
 
     public String authenticateUser(AuthenticationDto authenticationDto)
     {
-        UserRegistrationDomain admin= userRegistrationRepository.findByUsername(authenticationDto.getUsername());
+        UserRegistrationDomain admin= userRegistrationRepository.findByEmail(authenticationDto.getEmail());
         if (admin!=null)
         {
             if (admin.getPassword().equals(authenticationDto.getPassword()))

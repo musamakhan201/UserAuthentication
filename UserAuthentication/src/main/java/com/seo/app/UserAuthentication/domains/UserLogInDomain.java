@@ -22,8 +22,8 @@ public class UserLogInDomain {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int user_id;
-    private String username;
     private String password;
+    private String email;
     @Column(columnDefinition="DATETIME")
     private String login_time;
 

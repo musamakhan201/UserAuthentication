@@ -19,7 +19,7 @@ public class UserLogInService {
     public String loginUser(UserLogInDto userLogInDto)
     {
         UserLogInDomain userLogInDomain=new UserLogInDomain();
-        userLogInDomain.setUsername(userLogInDto.getUsername());
+        userLogInDomain.setEmail(userLogInDto.getEmail());
         userLogInDomain.setPassword(userLogInDto.getPassword());
         userLogInRepository.save(userLogInDomain);
         String responseMessage = "User Logged In";

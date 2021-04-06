@@ -42,17 +42,12 @@ public class UserRegistrationService {
         UserRegistrationDomain userRegistrationDomain;
         UserRegistrationDomain user = userRegistrationRepository.findByEmail(userRegistrationDto.getEmail());
         EmailTemplateDomain email=emailRepository.findByEmailTemplateID(1);
+        System.out.println(user);
         if (user!=null)
         {
             if (user.getEmail().equals(userRegistrationDto.getEmail()))
             {
                 String responseMessage = "User Already Exists With This Email";
-                log.info(responseMessage);
-                return responseMessage;
-            }
-            else if (user.getUsername().equals(userRegistrationDto.getUsername()))
-            {
-                String responseMessage = "User Already Exists With This Username";
                 log.info(responseMessage);
                 return responseMessage;
             }

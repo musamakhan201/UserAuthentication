@@ -29,7 +29,6 @@ public class UserRegistrationDomain implements Serializable {
     private String last_name;
     private String address;
     private String email;
-    private String username;
     private String password;
     private boolean loggedIn;
     @Column(columnDefinition = "DATETIME")

@@ -10,7 +10,7 @@ import lombok.ToString;
 @Getter
 @AllArgsConstructor
 public class AuthenticationDto {
-    private String username;
+    private String email;
     private String password;
 
 }
