@@ -59,7 +59,7 @@ public class UserRegistrationService {
                 SimpleMailMessage mailMessage=new SimpleMailMessage();
                 log.info(confirmationToken.getConfirmationToken());
                 mailMessage.setSubject(email.getSubject());
-                mailMessage.setFrom("coretech2k20@gmail.com");
+                mailMessage.setFrom("seo.optimization.helper@gmail.com");
                 mailMessage.setTo(userRegistrationDomain.getEmail());
                 mailMessage.setText(email.getBody()+confirmationToken.getConfirmationToken());
                 javaMailSender.send(mailMessage);
@@ -74,7 +74,7 @@ public class UserRegistrationService {
             SimpleMailMessage mailMessage=new SimpleMailMessage();
             log.info(confirmationToken.getConfirmationToken());
             mailMessage.setSubject(email.getSubject());
-            mailMessage.setFrom("coretech2k20@gmail.com");
+            mailMessage.setFrom("seo.optimization.helper@gmail.com");
             mailMessage.setTo(userRegistrationDomain.getEmail());
             mailMessage.setText(email.getBody()+confirmationToken.getConfirmationToken());
             javaMailSender.send(mailMessage);

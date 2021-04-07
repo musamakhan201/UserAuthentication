@@ -33,7 +33,7 @@ public class EmailService {
             if (!(email.getSubject().isEmpty()))
             {
                     mailMessage.setSubject(email.getSubject());
-                    mailMessage.setFrom("coretech2k20@gmail.com");
+                    mailMessage.setFrom("seo.optimization.helper@gmail.com");
                     mailMessage.setTo(mail);
                     mailMessage.setText(email.getBody());
                     javaMailSender.send(mailMessage);

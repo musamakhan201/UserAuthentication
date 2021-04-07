@@ -33,6 +33,22 @@ public class UserController {
     @Autowired
     private ConfirmRegisterationService confirmRegisterationService;
 
+    @Autowired
+    private SeoService seoService;
+
+    @Autowired
+    private ViewProfileService viewProfileService;
+
+    @RequestMapping(value = "/profile",method = RequestMethod.GET)
+    public UserRegistrationDto getAdmin(@RequestParam(value = "user_id") int id){
+        return viewProfileService.viewUser(id);
+    }
+
+    @RequestMapping(value = "/add/seo", method = RequestMethod.POST)
+    public String addSeo(@RequestBody SeoDto seoDto) {
+        log.info("POST Call received at SEO/add seo with DTO" + seoDto);
+        return seoService.addSeo(seoDto);
+    }
 
     @RequestMapping(value = "/password/change", method = RequestMethod.PUT)
     public String changePassword(@RequestBody PasswordUpdateDto passwordUpdateDto){
