@@ -7,6 +7,6 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface EmailRepository extends JpaRepository<EmailTemplateDomain, String> {
-    @Query(value = "SELECT * FROM EMAIL_TEMPLATES WHERE EMAIL_TEMPLATE_ID = ?1", nativeQuery = true)
+    @Query(value = "SELECT * FROM email_templates WHERE email_template_id = ?1", nativeQuery = true)
     EmailTemplateDomain findByEmailTemplateID(int id);
 }
