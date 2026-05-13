@@ -1,95 +1,118 @@
 package com.seo.app.UserAuthentication.controller;
 
-import com.seo.app.UserAuthentication.domain.transfer.object.*;
-import com.seo.app.UserAuthentication.services.*;
+import com.seo.app.UserAuthentication.domain.transfer.object.AuthenticationDto;
+import com.seo.app.UserAuthentication.domain.transfer.object.PasswordUpdateDto;
+import com.seo.app.UserAuthentication.domain.transfer.object.SeoDto;
+import com.seo.app.UserAuthentication.domain.transfer.object.UserLogInDto;
+import com.seo.app.UserAuthentication.domain.transfer.object.UserRegistrationDto;
+import com.seo.app.UserAuthentication.domain.transfer.object.UserUpdateDto;
+import com.seo.app.UserAuthentication.services.ConfirmRegisterationService;
+import com.seo.app.UserAuthentication.services.PasswordChangeService;
+import com.seo.app.UserAuthentication.services.SeoService;
+import com.seo.app.UserAuthentication.services.UserAuthenticationService;
+import com.seo.app.UserAuthentication.services.UserLogInService;
+import com.seo.app.UserAuthentication.services.UserLogoutService;
+import com.seo.app.UserAuthentication.services.UserRegistrationService;
+import com.seo.app.UserAuthentication.services.UserUpdateService;
+import com.seo.app.UserAuthentication.services.ViewProfileService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("seo")
 public class UserController {
-    private final Logger log = LoggerFactory.getLogger(UserController.class);
 
-    @Autowired
-    private UserRegistrationService userRegistrationService;
+    private static final Logger log = LoggerFactory.getLogger(UserController.class);
 
-    @Autowired
-    private UserLogInService userLogInService;
+    private final UserRegistrationService userRegistrationService;
+    private final UserLogInService userLogInService;
+    private final UserAuthenticationService userAuthenticationService;
+    private final UserLogoutService userLogoutService;
+    private final PasswordChangeService passwordChangeService;
+    private final UserUpdateService userUpdateService;
+    private final ConfirmRegisterationService confirmRegisterationService;
+    private final SeoService seoService;
+    private final ViewProfileService viewProfileService;
 
-    @Autowired
-    private UserAuthenticationService userAuthenticationService;
+    public UserController(
+            UserRegistrationService userRegistrationService,
+            UserLogInService userLogInService,
+            UserAuthenticationService userAuthenticationService,
+            UserLogoutService userLogoutService,
+            PasswordChangeService passwordChangeService,
+            UserUpdateService userUpdateService,
+            ConfirmRegisterationService confirmRegisterationService,
+            SeoService seoService,
+            ViewProfileService viewProfileService) {
+        this.userRegistrationService = userRegistrationService;
+        this.userLogInService = userLogInService;
+        this.userAuthenticationService = userAuthenticationService;
+        this.userLogoutService = userLogoutService;
+        this.passwordChangeService = passwordChangeService;
+        this.userUpdateService = userUpdateService;
+        this.confirmRegisterationService = confirmRegisterationService;
+        this.seoService = seoService;
+        this.viewProfileService = viewProfileService;
+    }
 
-    @Autowired
-    private UserLogoutService userLogoutService;
-
-    @Autowired
-    private PasswordChangeService passwordChangeService;
-
-    @Autowired
-    private UserUpdateService userUpdateService;
-
-    @Autowired
-    private ConfirmRegisterationService confirmRegisterationService;
-
-    @Autowired
-    private SeoService seoService;
-
-    @Autowired
-    private ViewProfileService viewProfileService;
-
-    @RequestMapping(value = "/profile",method = RequestMethod.GET)
-    public UserRegistrationDto getAdmin(@RequestParam(value = "user_id") int id){
+    @GetMapping("/profile")
+    public UserRegistrationDto getProfile(@RequestParam("user_id") int id) {
         return viewProfileService.viewUser(id);
     }
 
-    @RequestMapping(value = "/add/seo", method = RequestMethod.POST)
+    @PostMapping("/add/seo")
     public String addSeo(@RequestBody SeoDto seoDto) {
-        log.info("POST Call received at SEO/add seo with DTO" + seoDto);
+        log.info("POST /seo/add/seo body={}", seoDto);
         return seoService.addSeo(seoDto);
     }
 
-    @RequestMapping(value = "/password/change", method = RequestMethod.PUT)
-    public String changePassword(@RequestBody PasswordUpdateDto passwordUpdateDto){
-        log.info("POST Call received at User/change Password with DTO" + passwordUpdateDto);
+    @PutMapping("/password/change")
+    public String changePassword(@RequestBody PasswordUpdateDto passwordUpdateDto) {
+        log.info("PUT /seo/password/change body={}", passwordUpdateDto);
         return passwordChangeService.changePassword(passwordUpdateDto);
     }
 
-    @RequestMapping(value = "/user/update", method = RequestMethod.PUT)
+    @PutMapping("/user/update")
     public String updateUser(@RequestBody UserUpdateDto userUpdateDto) {
-        log.info("POST Call received at User/update with DTO" + userUpdateDto);
+        log.info("PUT /seo/user/update body={}", userUpdateDto);
         return userUpdateService.updateUser(userUpdateDto);
     }
 
-    @RequestMapping(value = "/register", method = RequestMethod.POST)
+    @PostMapping("/register")
     public String registerUser(@RequestBody UserRegistrationDto userRegistrationDto) {
-        log.info("POST Call received at user/register with DTO" + userRegistrationDto);
+        log.info("POST /seo/register body={}", userRegistrationDto);
         return userRegistrationService.registerUser(userRegistrationDto);
     }
 
-    @RequestMapping(value = "/login/user", method = RequestMethod.POST)
+    @PostMapping("/login/user")
     public String addLoginUser(@RequestBody UserLogInDto userLogInDto) {
-        log.info("POST Call received at user/add with DTO" + userLogInDto);
+        log.info("POST /seo/login/user body={}", userLogInDto);
         return userLogInService.loginUser(userLogInDto);
     }
 
-    @PostMapping(path = "/auth")
-    public String getStatus(@RequestBody final AuthenticationDto authenticationDto) {
-        log.info("POST Call received at user/login with DTO" + authenticationDto);
+    @PostMapping("/auth")
+    public String getStatus(@RequestBody AuthenticationDto authenticationDto) {
+        log.info("POST /seo/auth body={}", authenticationDto);
         return userAuthenticationService.authenticateUser(authenticationDto);
     }
 
-    @PostMapping(path = "/logout")
-    public String logOut(int user_id) {
-        log.info("POST Call received at user/logout with ID" + user_id);
-        return userLogoutService.logoutUser(user_id);
+    @PostMapping("/logout")
+    public String logOut(@RequestParam("user_id") int userId) {
+        log.info("POST /seo/logout user_id={}", userId);
+        return userLogoutService.logoutUser(userId);
     }
 
-    @RequestMapping(value="/confirm-account", method= {RequestMethod.GET, RequestMethod.POST})
-    public String confirmUserAccount(@RequestParam("token")String confirmationToken)
-    {
-        log.info("POST Call received for confirm registration");
+    @RequestMapping(value = "/confirm-account", method = {RequestMethod.GET, RequestMethod.POST})
+    public String confirmUserAccount(@RequestParam("token") String confirmationToken) {
+        log.info("GET/POST /seo/confirm-account");
         return confirmRegisterationService.confirmRegistration(confirmationToken);
     }
 }
