@@ -57,7 +57,11 @@ public class EmailService {
         mailMessage.setTo(user.getEmail());
         String body = email.getBody() != null ? email.getBody() : "";
         mailMessage.setText(body + confirmationToken);
-        javaMailSender.send(mailMessage);
-        log.info("Registration confirmation email queued for {}", user.getEmail());
+        try {
+            javaMailSender.send(mailMessage);
+            log.info("Registration confirmation email queued for {}", user.getEmail());
+        } catch (Exception e) {
+            log.error("Registration confirmation email failed for {}", user.getEmail(), e);
+        }
     }
 }
