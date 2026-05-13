@@ -9,6 +9,7 @@ import com.seo.app.UserAuthentication.repository.UserRegistrationRepository;
 import com.seo.app.UserAuthentication.security.PasswordSupport;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -21,18 +22,21 @@ public class UserRegistrationService {
     private final ConfirmationTokenRepository confirmationTokenRepository;
     private final EmailService emailService;
     private final PasswordSupport passwordSupport;
+    private final Environment environment;
 
     public UserRegistrationService(
             UserRegistrationRepository userRegistrationRepository,
             ObjectMapper objectMapper,
             ConfirmationTokenRepository confirmationTokenRepository,
             EmailService emailService,
-            PasswordSupport passwordSupport) {
+            PasswordSupport passwordSupport,
+            Environment environment) {
         this.userRegistrationRepository = userRegistrationRepository;
         this.objectMapper = objectMapper;
         this.confirmationTokenRepository = confirmationTokenRepository;
         this.emailService = emailService;
         this.passwordSupport = passwordSupport;
+        this.environment = environment;
     }
 
     public String registerUser(UserRegistrationDto userRegistrationDto) {
@@ -53,6 +57,13 @@ public class UserRegistrationService {
         log.info("Confirmation token created for user {}", userRegistrationDomain.getEmail());
 
         emailService.sendRegistrationConfirmation(userRegistrationDomain, confirmationToken.getConfirmationToken());
+
+        for (String profile : environment.getActiveProfiles()) {
+            if ("h2".equals(profile)) {
+                log.warn("h2 profile: confirmation token for API tests: {}", confirmationToken.getConfirmationToken());
+                break;
+            }
+        }
 
         String responseMessage = "Email has been sent to you";
         log.info(responseMessage);
